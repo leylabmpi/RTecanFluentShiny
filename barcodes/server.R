@@ -191,7 +191,8 @@ shinyServer(function(input, output, session) {
   })
   
   
-  #--- tables/plots ---#
+  #--- Rendering ---#
+  
   # rendering example samples input
   output$ex_samples_tbl = DT::renderDataTable(
     example_samples(),
