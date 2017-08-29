@@ -11,6 +11,7 @@ add_quotes = function(x){
 }
 
 #' making plate well index
+#' Output: named vector (Well --> location); column-wise location
 well96_index = function(){
   wells = c('A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 
             'A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
@@ -29,6 +30,8 @@ well96_index = function(){
   return(idx)
 }
 
+#' making plate well index
+#' Output: named vector (Well --> location); column-wise location
 well384_index = function(){
   c('A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 'I1', 'J1', 'K1', 'L1', 'M1', 'N1', 'O1', 'P1', 
     'A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2', 'I2', 'J2', 'K2', 'L2', 'M2', 'N2', 'O2', 'P2', 
