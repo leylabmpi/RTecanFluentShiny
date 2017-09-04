@@ -7,7 +7,6 @@ shinyUI(fluidPage(
   pageWithSidebar(
     titlePanel("qPCR Endpoint rename"),
     sidebarPanel( width = 3,      
-
       fileInput("endpoint_file", 
                 label = "An 'Endpoint' table exported from the BioRad qPCR software (Excel, csv, or txt)"),
       textInput('sheet_name_endpoint', 
@@ -21,7 +20,7 @@ shinyUI(fluidPage(
                 value = 'Sheet1'),
       hr(),
       numericInput("RFU_cutoff",
-                   value = "RFU cutoff for calling successful PCRs",
+                   label = "RFU cutoff for calling successful PCRs",
                    value = 1000)
       # need to add method for selecting 'pass' wells & 'PCR blank' wells
     ),
