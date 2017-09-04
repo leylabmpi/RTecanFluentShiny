@@ -20,39 +20,40 @@ wells = function(){
   colnames(df) = 1:ncol(df)
   df$row_ID = 1:nrow(df)
   df = df %>%
-    gather(col_ID, location, -row_ID) %>%
+    gather(col_ID, position, -row_ID) %>%
     mutate(col_ID = col_ID %>% as.Num,
            row_ID = row_ID %>% as.Num) 
   # converting well (location) to numeric
   ## column-wise
   df %>%
     arrange(col_ID, row_ID) %>%
-    mutate(location = 1:nrow(.))
+    mutate(position = 1:nrow(.))
 }
 
 
 #' adding plate & well location information (96-well)
-add_location = function(barcodes){
-  # skip adding location info if already present
-  if('location' %in% colnames(barcodes)){
+add_position = function(barcodes){
+  # skip adding position info if already present
+  if('position' %in% colnames(barcodes)){
     barcodes = barcodes %>%
-      mutate(location = well2index(barcodes$location)) %>%
-      arrange(location)
+      mutate(position = well2index(barcodes$position)) %>%
+      arrange(position)
     return(barcodes)
   }
-  # data.frame of well locations
+  # data.frame of well positions
   df_wells = wells()
   
   # forward
   fp = barcodes %>% 
     filter(tolower(direction) == 'forward')
+  
   ## adding well information
   if(nrow(fp) > 0){
     fp$row_ID = rep(seq(1,8), 20)[1:nrow(fp)]
     fp = fp %>%
       left_join(df_wells, c('row_ID')) %>%
       dplyr::select(-row_ID, -col_ID) %>%
-      arrange(location)
+      arrange(labware)
   } 
   
   # reverse
@@ -64,7 +65,7 @@ add_location = function(barcodes){
     rp = rp %>%
       left_join(df_wells, c('col_ID')) %>%
       dplyr::select(-row_ID, -col_ID) %>%
-      arrange(location)
+      arrange(labware)
   } 
   
   # return
@@ -84,7 +85,7 @@ add_location = function(barcodes){
 
 #' making pairwise table of all barcodes
 #' Input: data.frame of barcodes
-#' Output: table listing barcodes & plate locations
+#' Output: table listing barcodes & plate positions
 pairwise_barcodes = function(barcodes, join_id = NULL){
   # parsing by barcode
   barcodes = barcodes %>%
@@ -94,7 +95,7 @@ pairwise_barcodes = function(barcodes, join_id = NULL){
     dplyr::select(-direction) 
   rp = barcodes %>% 
     filter(tolower(direction) == 'reverse') %>%
-    dplyr::select(-direction) 
+    dplyr::select(-direction)  
   
   # joining 
   if(is.null(join_id)){
@@ -106,31 +107,24 @@ pairwise_barcodes = function(barcodes, join_id = NULL){
     df = full_join(fp, rp, c(join_id), suffix = c('_F', '_R'))
   }
   
-  # spliting location info
+  # spliting positions info
   n_dir = barcodes$direction %>% unique %>% length
   if(n_dir == 1){
   } else
   if(n_dir == 2){
-    df = df %>% 
-      mutate(location_F = location,
-            location_R = location) %>%
-      dplyr::select(-location) 
     ## column order
     df = cbind(df %>% dplyr::select(-name_F, -index_F,
-                                    -labware_F, -location_F,
+                                    -labware_F,
                                     -name_R, -index_R,
-                                    -labware_R, -location_R),
-               df %>% dplyr::select(name_F, index_F,
-                                    labware_F, location_F,
-                                    name_R, index_R,
-                                    labware_R, location_R))
+                                    -labware_R, -position),
+               df %>% dplyr::select(name_F, index_F, labware_F, 
+                                    name_R, index_R, labware_R, position)) %>%
+      arrange(labware_F, labware_R, position) %>%
+      mutate(labware_name = mapply(paste0, labware_F, labware_R) %>% as.factor %>% as.numeric,
+             labware_name = paste('F-R primer plate', labware_name))
   } else {
     stop('Too many barcode directions!')
   }
-           
-  # arranging & formatting 
-  df = df %>%
-    arrange(labware_F, labware_R) 
   
   # renaming columns
   colnames(df) = gsub('^', 'TECAN_primer_', colnames(df))
@@ -143,12 +137,15 @@ pairwise_barcodes = function(barcodes, join_id = NULL){
           endsWith(colnames(df), '_R'))){
     colnames(df) = gsub('(TECAN.+)_F$', '\\1', colnames(df))
   }
+  # renaming
+  df = df %>%
+    rename('TECAN_primer_target_position' = TECAN_primer_position)
   
   # return
   return(df)
 }
 
-#' adding barcodes + location information to sample file
+#' adding barcodes + positions information to sample file
 add_barcodes = function(samples, pw_barcodes, barcode_start=1){
   # filtering
   n_samples = nrow(samples)
@@ -178,10 +175,10 @@ shinyServer(function(input, output, session) {
     read_tbl(infile, sheet_name=input$sheet_name)
   })
   
-  # making pairwise barcodes with location info
+  # making pairwise barcodes with position info
   pw_loc_barcodes = reactive({
-    pairwise_barcodes(add_location(raw()), 
-                      join_id='location')
+    pairwise_barcodes(add_position(raw()), 
+                      join_id='position')
   })
   
   sample_barcodes = reactive({
