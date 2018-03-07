@@ -33,7 +33,7 @@ well96_index = function(){
 #' making plate well index
 #' Output: named vector (Well --> location); column-wise location
 well384_index = function(){
-  c('A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 'I1', 'J1', 'K1', 'L1', 'M1', 'N1', 'O1', 'P1', 
+  wells = c('A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 'I1', 'J1', 'K1', 'L1', 'M1', 'N1', 'O1', 'P1', 
     'A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2', 'I2', 'J2', 'K2', 'L2', 'M2', 'N2', 'O2', 'P2', 
     'A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'H3', 'I3', 'J3', 'K3', 'L3', 'M3', 'N3', 'O3', 'P3', 
     'A4', 'B4', 'C4', 'D4', 'E4', 'F4', 'G4', 'H4', 'I4', 'J4', 'K4', 'L4', 'M4', 'N4', 'O4', 'P4', 
@@ -65,19 +65,30 @@ well384_index = function(){
 
 #' converting wellID to column (assuming 96-well)
 #' input: character vector of wellIDs
-well2index = function(x){
-  idx = well96_index()
-  idx[x]
+well2index = function(x, plate_type='96-well'){
+  if(plate_type == '96-well'){
+    idx = well96_index()
+  } else 
+  if(plate_type == '384-well'){
+    idx = well384_index()
+  } else {
+    stop('Do not recoginize plate type')
+  }
+  return(as.numeric(idx[x]))
+}
+
+#' converting wellID to column (assuming 96-well)
+#' input: numeric well number
+index2well = function(x, plate_type='96-well'){
+  if(plate_type == '96-well'){
+    idx = well96_index()
+  } else 
+  if(plate_type == '384-well'){
+      idx = well384_index()
+  } else {
+      stop('Do not recoginize plate type')
+  }
+  return(names(idx)[idx==x])
 }
 
 
-cols = as.character(1:24)
-rows = LETTERS[1:16]
-df = apply(expand.grid(rows, cols), 1, paste, sep='', collapse='')
-df = matrix(as.vector(df), nrow=16, ncol=24) %>% data.frame
-colnames(df) = 1:ncol(df)
-df$row_ID = 1:nrow(df)
-df = df %>%
-  gather(col_ID, location, -row_ID) %>%
-  mutate(col_ID = col_ID %>% as.Num,
-         row_ID = row_ID %>% as.Num) 
