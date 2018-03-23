@@ -42,7 +42,7 @@ shinyServer(function(input, output, session) {
     samples_converted(),
     extensions = c('Buttons'),
     options = list(
-      pageLength = 50,
+      pageLength = 10000,
       dom = 'Brt',
       buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
     )
