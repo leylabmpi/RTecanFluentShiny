@@ -208,6 +208,7 @@ shinyServer(function(input, output, session) {
     extensions = c('Buttons'),
     options = list(
       pageLength = 48,
+      lengthMenu = c(48, 96, 384, 1536),
       dom = 'Blfrtip',
       buttons = c('colvis', 'copy', 'csv', 'excel', 'pdf', 'print')
     )
@@ -219,7 +220,8 @@ shinyServer(function(input, output, session) {
     filter = 'bottom',
     extensions = c('Buttons'),
     options = list(
-      pageLength = 50,
+      pageLength = 48,
+      lengthMenu = c(48, 96, 384, 1536),
       dom = 'Blfrtip',
       buttons = c('colvis', 'copy', 'csv', 'excel', 'pdf', 'print')
     )
@@ -232,6 +234,7 @@ shinyServer(function(input, output, session) {
     extensions = c('Buttons'),
     options = list(
       pageLength = 48,
+      lengthMenu = c(48, 96, 384, 1536),
       dom = 'Blfrtip',
       buttons = c('colvis', 'copy', 'csv', 'excel', 'pdf', 'print')
     )
@@ -244,6 +247,7 @@ shinyServer(function(input, output, session) {
     extensions = c('Buttons'),
     options = list(
       pageLength = 48,
+      lengthMenu = c(48, 96, 384, 1536),
       dom = 'Blfrtip',
       buttons = c('colvis', 'copy', 'csv', 'excel', 'pdf', 'print')
     )
