@@ -1,5 +1,6 @@
 # Shiny server
 library(shiny)
+library(tidyr)
 source("../utils/io.R")
 source("../utils/format.R")
 
@@ -13,13 +14,16 @@ plate2long = function(x){
 long2plate = function(x, plate_type = '96-well'){
   y = read.delim(text=x, sep='\t', header=FALSE)
   n_rows_per_column = ifelse(plate_type == '96-well', 8, 16)
-  y = as.data.frame(y[,1])
+  y = y %>%
+    unite_('plate_format', colnames(.), sep=';')
+  
   n_col = ceiling(nrow(y) / n_rows_per_column)
   y = as.vector(as.matrix(y))
   y = matrix(y, nrow=n_rows_per_column, ncol=n_col)
   y = as.data.frame(y)
   colnames(y) = as.character(1:n_col)
   rownames(y) = LETTERS[1:n_rows_per_column]
+  
   return(y)
 }
 
