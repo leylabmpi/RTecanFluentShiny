@@ -7,11 +7,11 @@ library(shiny)
 shinyUI(fluidPage(
   pageWithSidebar(
     titlePanel("Barcodes"),
-    sidebarPanel( width = 3,      
+    sidebarPanel( width = 3,  
       selectInput('barcode_type',
                   label = "Which barcodes?",
-                  choices = c('Nextera S5-N7 (HiSeq)' = 'S5-N7_HiSeq',
-                              'Nextera S5-N7 (MiSeq)' = 'S5-N7_MiSeq',
+                  choices = c('Nextera N7-S5 (HiSeq)' = 'N7-S5_HiSeq',
+                              'Nextera N7-S5 (MiSeq)' = 'N7-S5_MiSeq',
                               'Caporaso 515FB' = '515FB'),
                   selected = 'S5-N7'),
       hr(),
@@ -24,14 +24,6 @@ shinyUI(fluidPage(
       numericInput("barcode_start",
                    label = "Starting sample barcode",
                    value = 1)
-      # hr(),
-      # checkboxGroupInput('add_controls',
-      #                   label = "Add controls?",
-      #                   choices = c('Sequenced + control' = 'seq_pos',
-      #                          'Sequenced - control' = 'seq_neg',
-      #                          'Not-sequenced + control' = 'nonseq_pos',
-      #                          'Not-sequenced - control' = 'nonseq_neg'),
-      #                   selected = NULL)
     ),
     mainPanel(
       tabsetPanel(type = "tabs", 

@@ -129,7 +129,7 @@ pairwise_barcodes = function(barcodes, join_id = NULL){
   # renaming columns
   colnames(df) = gsub('^', 'TECAN_primer_', colnames(df))
   
-  # fitlering if columns are all NAs
+  # filtering if columns are all NAs
   df = df[,colSums(is.na(df)) < nrow(df)]
   
   # renaming columns (if only forward primers left)
@@ -139,7 +139,8 @@ pairwise_barcodes = function(barcodes, join_id = NULL){
   }
   # renaming
   df = df %>%
-    rename('TECAN_primer_target_position' = TECAN_primer_position)
+    rename('TECAN_primer_target_position' = TECAN_primer_position) %>%
+    mutate(primer_plate_well_ID = index2well(TECAN_primer_target_position))
   
   # return
   return(df)

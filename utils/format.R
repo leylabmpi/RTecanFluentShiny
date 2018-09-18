@@ -57,7 +57,6 @@ well384_index = function(){
     'A22', 'B22', 'C22', 'D22', 'E22', 'F22', 'G22', 'H22', 'I22', 'J22', 'K22', 'L22', 'M22', 'N22', 'O22', 'P22', 
     'A23', 'B23', 'C23', 'D23', 'E23', 'F23', 'G23', 'H23', 'I23', 'J23', 'K23', 'L23', 'M23', 'N23', 'O23', 'P23', 
     'A24', 'B24', 'C24', 'D24', 'E24', 'F24', 'G24', 'H24', 'I24', 'J24', 'K24', 'L24', 'M24', 'N24', 'O24', 'P24')
-  
   idx = 1:length(wells)
   names(idx) = wells
   return(idx)
@@ -88,7 +87,10 @@ index2well = function(x, plate_type='96-well'){
   } else {
       stop('Do not recoginize plate type')
   }
-  return(names(idx)[idx==x])
+  idx2 = names(idx)
+  names(idx2) = idx
+  #return(names(idx)[idx==x])
+  return(as.character(idx2[x]))
 }
 
 
