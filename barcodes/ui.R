@@ -14,6 +14,7 @@ shinyUI(fluidPage(
                               'Nextera N7-S5 (MiSeq)' = 'N7-S5_MiSeq',
                               'Caporaso 515FB' = '515FB'),
                   selected = 'S5-N7'),
+      h5('NOTE: the S5 barcode is reverse-complemented for MiSeq versus HiSeq'),
       hr(),
       fileInput("sample_file", 
                 label = "A table listing samples. One sample per row. (Excel or CSV)"),
