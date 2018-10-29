@@ -7,45 +7,44 @@ source("../utils/io.R")
 source("../utils/format.R")
 
 
-samples_convert = function(df, column_idx, plate_type){
-  column_idx = column_idx %>% as.character
-  df = df %>% as.data.frame
-  if(class(df[,column_idx]) == 'character'){
-    f = well2index
+well_convert = function(x, conv_dir, plate_type){
+  x = read.delim(text=x, sep='\t', header=FALSE)[,1]
+  x = as.character(x)
+  if(conv_dir == 'well2index'){
+    y = well2index(x, plate_type)
+  } else
+  if(conv_dir == 'index2well'){
+    y = index2well(x, plate_type)
   } else{
-    f = index2well
+    y = x 
   }
-  df[,column_idx] = sapply(df[,column_idx], f, plate_type=plate_type)
+  df = data.frame(converted = y)
+  rownames(df) = x
   return(df)
 }
 
 
 #-- server --#
 shinyServer(function(input, output, session) {
-  
-  # loading samples file
-  samples = eventReactive(input$sample_file,{
-    infile = rename_tmp_file(input$sample_file)
-    read_tbl(infile, sheet_name=input$sheet_name)
+  tbl = reactive({
+    x = NULL
+    if(input$conv_direction == 'WellID --> Well#'){
+      x = well_convert(input$input_text, 'well2index', plate_type=input$plate_type)
+    } else if(input$conv_direction == 'Well# --> WellID'){
+      x = well_convert(input$input_text, 'index2well', plate_type=input$plate_type)
+    } 
+    return(x)
   })
   
-  # making pairwise barcodes with position info
-  samples_converted = reactive({
-    samples_convert(samples(), 
-                    column_idx=input$column_idx,
-                    plate_type=input$plate_type)
-  })
-  
-  #--- Rendering ---#
-  # rendering example samples input
-  output$conv_table = DT::renderDataTable(
-    samples_converted(),
+  output$tbl = DT::renderDataTable(
+    tbl(),
+    filter = 'bottom',
     extensions = c('Buttons'),
     options = list(
-      pageLength = 10000,
-      dom = 'Brt',
+      pageLength = 96,
+      lengthMenu = c(48, 96, 384, 1536),
+      dom = 'Blfrtip',
       buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
     )
   )
 })
-
