@@ -86,7 +86,7 @@ add_position = function(barcodes){
 #' making pairwise table of all barcodes
 #' Input: data.frame of barcodes
 #' Output: table listing barcodes & plate positions
-pairwise_barcodes = function(barcodes, join_id = NULL){
+pairwise_barcodes = function(barcodes, barcode_type, join_id = NULL){
   # parsing by barcode
   barcodes = barcodes %>%
     dplyr::select(-sequence)
@@ -121,7 +121,8 @@ pairwise_barcodes = function(barcodes, join_id = NULL){
                                     name_R, index_R, labware_R, position)) %>%
       arrange(labware_F, labware_R, position) %>%
       mutate(labware_name = mapply(paste0, labware_F, labware_R) %>% as.factor %>% as.numeric,
-             labware_name = paste('F-R primer plate', labware_name))
+             barcode_type = gsub('_(Mi|Hi)Seq$', '', barcode_type)) %>%
+      unite(labware_name, barcode_type, labware_name)
   } else {
     stop('Too many barcode directions!')
   }
@@ -147,7 +148,7 @@ pairwise_barcodes = function(barcodes, join_id = NULL){
 }
 
 #' adding barcodes + positions information to sample file
-add_barcodes = function(samples, pw_barcodes, barcode_start=1){
+append_barcodes = function(samples, pw_barcodes, barcode_start=1){
   # filtering
   n_samples = nrow(samples)
   barcode_end = barcode_start + n_samples - 1
@@ -162,6 +163,40 @@ add_barcodes = function(samples, pw_barcodes, barcode_start=1){
   cbind(samples, pw_barcodes)
 }
 
+#' main flow control for adding barcodes to samples table
+add_barcodes = function(samples, pw_barcodes, barcode_start=1){
+  if(is.null(samples) | is.null(pw_barcodes)){
+    return(NULL)
+  }
+  cols = c('TECAN_primer_labware_name', 'TECAN_primer_target_position')
+  pw_barcodes$TECAN_primer_labware_F = NULL
+  pw_barcodes$TECAN_primer_labware_R = NULL
+  if(all(cols %in% colnames(samples))){
+    df = inner_join(samples, pw_barcodes, cols)
+  } else {
+    df = append_barcodes(samples, pw_barcodes, barcode_start)
+  }
+  return(df)
+}
+
+#' Loading concentration table (plate reader output)
+read_samples = function(txt, header=TRUE){
+  # read table from pasted-in
+  if(is.null(txt) | nchar(txt) == 0){
+    return(NULL)
+  }
+  df = read.delim(text=txt, sep='\t', header=header)
+  
+  ## checking for required columns
+  req_cols = c('Sample')
+  for(x in req_cols){
+    if(!x %in% colnames(df)){
+      print(sprintf('%s not in header', x))
+    }
+  }
+  return(df)
+}
+
 #-- server --#
 shinyServer(function(input, output, session) {
   # loading barcodes
@@ -171,15 +206,15 @@ shinyServer(function(input, output, session) {
   })
   
   # loading samples file
-  samples = eventReactive(input$sample_file,{
-    infile = rename_tmp_file(input$sample_file)
-    read_tbl(infile, sheet_name=input$sheet_name)
+  samples = reactive({
+    read_samples(input$Samples)
   })
   
   # making pairwise barcodes with position info
   pw_loc_barcodes = reactive({
     pairwise_barcodes(add_position(raw()), 
-                      join_id='position')
+                      join_id='position',
+                      barcode_type=input$barcode_type)
   })
   
   sample_barcodes = reactive({
@@ -191,20 +226,10 @@ shinyServer(function(input, output, session) {
   
   #--- Rendering ---#
   
-  # rendering example samples input
-  output$ex_samples_tbl = DT::renderDataTable(
-    example_samples(),
-    extensions = c('Buttons'),
-    options = list(
-      pageLength = 50,
-      dom = 'Brt',
-      buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
-    )
-  )
-  
   # rendering barcodes (raw)
   output$raw_tbl = DT::renderDataTable(
     raw(),
+    rownames= FALSE,
     filter = 'bottom',
     extensions = c('Buttons'),
     options = list(
@@ -218,6 +243,7 @@ shinyServer(function(input, output, session) {
   # rendering samples table
   output$samples_tbl = DT::renderDataTable(
     samples(),
+    rownames= FALSE,
     filter = 'bottom',
     extensions = c('Buttons'),
     options = list(
@@ -231,6 +257,7 @@ shinyServer(function(input, output, session) {
   # rendering pairwise barcodes with location info
   output$pw_loc_barcodes_tbl = DT::renderDataTable(
     pw_loc_barcodes(),
+    rownames= FALSE,
     filter = 'bottom',
     extensions = c('Buttons'),
     options = list(
@@ -244,6 +271,7 @@ shinyServer(function(input, output, session) {
   # rendering samples + barcodes
   output$sample_barcodes_tbl = DT::renderDataTable(
     sample_barcodes(),
+    rownames= FALSE,
     filter = 'bottom',
     extensions = c('Buttons'),
     options = list(
@@ -251,6 +279,18 @@ shinyServer(function(input, output, session) {
       lengthMenu = c(48, 96, 384, 1536),
       dom = 'Blfrtip',
       buttons = c('colvis', 'copy', 'csv', 'excel', 'pdf', 'print')
+    )
+  )
+  
+  # rendering example samples input
+  output$ex_samples_tbl = DT::renderDataTable(
+    example_samples(),
+    rownames= FALSE,
+    extensions = c('Buttons'),
+    options = list(
+      pageLength = 50,
+      dom = 'Brt',
+      buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
     )
   )
 })
