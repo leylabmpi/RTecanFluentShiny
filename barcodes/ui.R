@@ -45,7 +45,7 @@ shinyUI(fluidPage(
                                   height = "500px")
                   ),
                   tabPanel("Samples + barcodes", DT::dataTableOutput('sample_barcodes_tbl')),
-                  tabPanel("Example samples input", DT::dataTableOutput('ex_samples_tbl'))
+                  tabPanel("Example 'Samples' input", DT::dataTableOutput('ex_samples_tbl'))
       )
     )
   )

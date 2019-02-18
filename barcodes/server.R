@@ -230,7 +230,7 @@ shinyServer(function(input, output, session) {
   output$raw_tbl = DT::renderDataTable(
     raw(),
     rownames= FALSE,
-    filter = 'bottom',
+    filter = 'top',
     extensions = c('Buttons'),
     options = list(
       pageLength = 48,
@@ -244,7 +244,7 @@ shinyServer(function(input, output, session) {
   output$samples_tbl = DT::renderDataTable(
     samples(),
     rownames= FALSE,
-    filter = 'bottom',
+    filter = 'top',
     extensions = c('Buttons'),
     options = list(
       pageLength = 48,
@@ -258,7 +258,7 @@ shinyServer(function(input, output, session) {
   output$pw_loc_barcodes_tbl = DT::renderDataTable(
     pw_loc_barcodes(),
     rownames= FALSE,
-    filter = 'bottom',
+    filter = 'top',
     extensions = c('Buttons'),
     options = list(
       pageLength = 48,
@@ -272,7 +272,7 @@ shinyServer(function(input, output, session) {
   output$sample_barcodes_tbl = DT::renderDataTable(
     sample_barcodes(),
     rownames= FALSE,
-    filter = 'bottom',
+    filter = 'top',
     extensions = c('Buttons'),
     options = list(
       pageLength = 48,
