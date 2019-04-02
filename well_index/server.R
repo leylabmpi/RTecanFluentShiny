@@ -19,7 +19,7 @@ well_convert = function(x, conv_dir, plate_type){
     y = x 
   }
   df = data.frame(converted = y)
-  rownames(df) = x
+  #rownames(df) = x
   return(df)
 }
 
@@ -40,11 +40,12 @@ shinyServer(function(input, output, session) {
     tbl(),
     filter = 'bottom',
     extensions = c('Buttons'),
+    rownames= FALSE,
     options = list(
       pageLength = 96,
       lengthMenu = c(48, 96, 384, 1536),
       dom = 'Blfrtip',
-      buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
+      buttons = c('copy', 'csv', 'excel')
     )
   )
 })
