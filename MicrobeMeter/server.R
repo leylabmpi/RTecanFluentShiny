@@ -82,7 +82,7 @@ turbidity_plot = function(turbidityCTMD, plot_type=c('smooth'),
     p = p + geom_point(size=0.5, alpha=0.7) 
   }
   if('smooth' %in% plot_type){
-    p = p + geom_smooth()
+    p = p + geom_smooth(size=0.75, alpha=0.8)
   } 
 
   return(p)
