@@ -1,6 +1,6 @@
 # Shiny UI
 library(shiny)
-
+library(plotly)
 
 
 #-- UI --#
