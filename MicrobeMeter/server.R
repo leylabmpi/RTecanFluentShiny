@@ -3,134 +3,158 @@ library(shiny)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+library(plotly)
 source("../utils/io.R")
 source("../utils/format.R")
 
-# plate2long = function(x){
-#   y = read.delim(text=x, sep='\t', header=FALSE)
-#   y = as.data.frame(as.vector(as.matrix(y)))
-#   colnames(y) = c('long_format')
-#   return(y)
-# }
-# 
-# long2plate = function(x, plate_type = '96-well'){
-#   y = read.delim(text=x, sep='\t', header=FALSE)
-#   n_rows_per_column = ifelse(plate_type == '96-well', 8, 16)
-#   y = y %>%
-#     unite_('plate_format', colnames(.), sep=';')
-#   
-#   n_col = ceiling(nrow(y) / n_rows_per_column)
-#   y = as.vector(as.matrix(y))
-#   y = matrix(y, nrow=n_rows_per_column, ncol=n_col)
-#   y = as.data.frame(y)
-#   colnames(y) = as.character(1:n_col)
-#   rownames(y) = LETTERS[1:n_rows_per_column]
-#   
-#   return(y)
-# }
 
 load_ex_data = function(){
-  F = '/Users/nyoungblut/dev/R/RTecanFluentShiny/MicrobeMeter/data/MicrobeMeter_output1.tsv'
-  df = read.delim(F, sep='\t', skip=1, fill=TRUE, stringsAsFactors=TRUE)
+  F = './data/MicrobeMeter_validation1.tsv'
+  df = read.delim(F, sep='\t', skip=1, fill=TRUE, stringsAsFactors=TRUE, row.names=NULL)
   return(df)
 }
 
-turbidityCalculator = function(turbidityCTMD, timeUnit='minutes', windowSize=0) {
-  # Setting the time unit for x-axis
-  timeUnit <- switch (timeUnit, seconds = 1, minutes = 60, hours = 3600, s = 1, m = 60, h = 3600)
-  xLabel <- switch (as.character(timeUnit), "1" = "Time (s)", "60" = "Time (m)", "3600" = "Time (h)")
+turbidityCalculator = function(turbidityCTMD, time_unit=1, round_unit=3) {
+  # formatting 
+  time_unit = as.numeric(time_unit)
+  colnames(turbidityCTMD) = c('Time', 'Temperature', 'Port_1', 
+                              'Port_2', 'Port_3', 'Port_4', 'X')
   
   # Getting rid of unwanted information
-  colnames(turbidityCTMD) <- turbidityCTMD[1,]
-  turbidityCTMD <- turbidityCTMD[,c(-2,-7)]
-  turbidityCTMD <- turbidityCTMD[-1,]
+  turbidityCTMD = turbidityCTMD[,c(-7)]
   
   # Converting the time stamp to Unix timestamp (seconds)
-  turbidityCTMD[,1] <- as.numeric(as.POSIXct(strptime(turbidityCTMD[,1], "%c")))
-  turbidityCTMD[,1] <- turbidityCTMD[,1] - turbidityCTMD[2,1]
-  turbidityCTMD <- data.matrix(turbidityCTMD)
+  turbidityCTMD$Time = as.numeric(as.POSIXct(strptime(turbidityCTMD$Time, "%c")))
+  turbidityCTMD$Time = turbidityCTMD$Time - turbidityCTMD[2,'Time']
   
-  print(turbidityCTMD)
-  
-  ############################################
   # Normalising the measurements of Port 1-3 using Port 4 for removing temperature bias
-  turbidityCTMDNorm <- NULL
-  for (i in 2:4) {
-    turbidityCTMDNorm <- cbind(turbidityCTMDNorm, turbidityCTMD[,i]*(turbidityCTMD[1,i]/turbidityCTMD[,5]))
-  }
+  turbidityCTMD = turbidityCTMD %>%
+      mutate(Port_1 = Port_1 * (first(Port_1) / Port_4),
+             Port_2 = Port_2 * (first(Port_2) / Port_4),
+             Port_3 = Port_3 * (first(Port_3) / Port_4)) 
   
-  # Calculating the turbidity: divide each measurement using the corresponding Blank and calculate the -log, then multiply with 1/1.6 for path-length correction
-  pathLength <- 1.6
-  turbidityCTMDFull <- cbind((turbidityCTMD[,1]/timeUnit), -log10(t(t(turbidityCTMDNorm)/turbidityCTMDNorm[1,]))*(1/pathLength))[-1,]
-  colnames(turbidityCTMDFull) <- colnames(turbidityCTMD)[-5]
+  # Calculating the turbidity
+  ## divide each measurement using the corresponding Blank and calculate the -log
+  ## then multiply with 1/1.6 for path-length correction
+  turbidityCTMD = turbidityCTMD %>%
+    mutate(Port_1 = -log(Port_1 / first(Port_1), base=10) * (1/1.6),
+           Port_2 = -log(Port_2 / first(Port_2), base=10) * (1/1.6),
+           Port_3 = -log(Port_3 / first(Port_3), base=10) * (1/1.6)) %>%
+    filter(Time >= 0) %>%
+    dplyr::select(-Port_4) %>%
+    mutate(Time = Time / time_unit,
+           Time = round(Time, round_unit),
+           Port_1 = round(Port_1, round_unit),
+           Port_2 = round(Port_2, round_unit),
+           Port_3 = round(Port_3, round_unit))
   
-  # Conducting moving average
-  if (windowSize > 0) turbidityCTMDFull <- filter(turbidityCTMDFull, rep(1/windowSize, windowSize), sides = 1)[windowSize:nrow(turbidityCTMDFull),]
-  
-  # Calculating average and SD
-  turbidityCTMDMean <- rowMeans(turbidityCTMDFull[,2:4])
-  turbidityCTMDSD <- apply((turbidityCTMDFull[,2:4]), 1, sd)
-  # formatting table
-  turbidityCTMD = rbind(c(colnames(turbidityCTMD)[-5], "Mean", "SD"), cbind(turbidityCTMDFull, turbidityCTMDMean, turbidityCTMDSD))
-  
-  print(turbidityCTMD)
-  
+  # return
   return(turbidityCTMD)
 }
   
-#   # Saving the turbidity results
-#   #write.table("TurbidityResults.tsv", sep = "\t", row.names = F, col.names = F)
-#   ############################################
-#   
-#   ############################################
-#   # Generating the plot
-#   # Turbidity Plot
-#   pdf("Turbidity.pdf")
-#   matplot(turbidityCTMDFull[,1], turbidityCTMDFull[,2:4], type = "p", ylab = "Turbidity", xlab = xLabel, pch = 1:3, cex = 0.5, col = 1:3)
-#   legend('topleft', legend = c("Port 1", "Port 2", "Port 3"), pch = 1:3, col = 1:3)
-#   dev.off()
-#   
-#   # Turbidity Mean-SD Plot
-#   pdf("Turbidity_Mean-SD.pdf")
-#   matplot(turbidityCTMDFull[,1], turbidityCTMDMean, type = "n", ylab = "Turbidity", ylim = c(min(turbidityCTMDMean-turbidityCTMDSD), max(turbidityCTMDMean+turbidityCTMDSD)), xlab = xLabel, pch = 20, cex = 0.5, col = 'black')
-#   arrows(turbidityCTMDFull[,1], turbidityCTMDMean-turbidityCTMDSD, turbidityCTMDFull[,1], turbidityCTMDMean+turbidityCTMDSD, length = 0.02, angle = 90, code = 3, col = 'grey')
-#   points(turbidityCTMDFull[,1], turbidityCTMDMean, pch = 20, cex = 0.5, col = 'black')
-#   dev.off()
-#   ############################################
-# }
+
+turbidity_plot = function(turbidityCTMD, plot_type=c('smooth'), 
+                          time_unit=1, plot_content='turbidity'){
+  if(is.null(turbidityCTMD) || nrow(turbidityCTMD) < 1){
+    return(NULL)
+  }
+  
+  # x-axis label
+  x_label = switch(time_unit, '1' = 'Seconds', '60' = 'Minutes', '3600' = 'Hours')
+  
+  # base plot object
+  if(plot_content == 'turbidity'){
+    p = turbidityCTMD %>%
+      gather(Port, Turbidity, -Time, -Temperature) %>%
+      ggplot(aes(Time, Turbidity, color=Port)) +
+      labs(x=x_label) +
+      theme_bw() 
+  } else {
+    p = turbidityCTMD %>%
+      dplyr::select(Time, Temperature) %>%
+      ggplot(aes(Time, Temperature)) +
+      labs(x=x_label) +
+      theme_bw() 
+  }
+  
+  # how to plot the data
+  if('points' %in% plot_type){
+    p = p + geom_point(size=0.5, alpha=0.7) 
+  }
+  if('smooth' %in% plot_type){
+    p = p + geom_smooth()
+  } 
+
+  return(p)
+}
 
 #-- server --#
 shinyServer(function(input, output, session) {
+  
+  # load & process data table
   df_turbidity = reactive({
-    if(input$input_text == ''){
+    # input file/text
+    if(input$input_text == '' & is.null(input$input_file)){
       return(NULL)
+    } else 
+    if(! is.null(input$input_file)){
+      print(input$input_file)
+      F = rename_tmp_file(input$input_file)
+      df = read.delim(F, sep='\t', skip=1, fill=TRUE, stringsAsFactors=TRUE)
+    } else
+    if(input$input_text != ''){
+      df = read.delim(text=input$input_text, sep='\t', skip=1, fill=TRUE, stringsAsFactors=TRUE)
     }
-    df = read.delim(text=input$input_text, sep='\t', skip=1, fill=TRUE, stringsAsFactors=TRUE)
-    #df = as.data.frame(as.vector(as.matrix(df)))
-    #print(class(df))
-    #print(df)
-    turbidityCalculator(df, timeUnit=input$time_unit, windowSize=input$window_size)
+    # calculations
+    turbidityCalculator(df, time_unit=input$time_unit, round_unit=input$round_unit)
   })
   
+  # plotly object of turbidity
+  output$turbidity_curves = renderPlotly({
+    df = df_turbidity()
+    if(is.null(df)){
+      return(plotly_empty())
+    }
+    turbidity_plot(df, 
+                   plot_type=input$plot_type,
+                   time_unit=input$time_unit,
+                   plot_content='turbidity')
+  })
+  # plotly object of temperature
+  output$temperature_curve = renderPlotly({
+    df = df_turbidity()
+    if(is.null(df)){
+      return(plotly_empty())
+    }
+    turbidity_plot(df,
+                   plot_type=input$plot_type,
+                   time_unit=input$time_unit,
+                   plot_content='temperature')
+  })
+  
+  # dataTable object of turbidty & temperature
   output$turbidity_tbl = DT::renderDataTable(
     df_turbidity(),
     filter = 'bottom',
     extensions = c('Buttons'),
+    rownames= FALSE,
     options = list(
-      pageLength = 30,
-      lengthMenu = c(30, 100, 500),
+      pageLength = 10,
+      lengthMenu = c(10, 100, 500, -1),
       dom = 'Blfrtip',
       buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
     )
   )
   
+  # example data
   output$ex_data = DT::renderDataTable(
     load_ex_data(),
     filter = 'bottom',
+    rownames= FALSE,
     extensions = c('Buttons'),
     options = list(
-      pageLength = 30,
-      lengthMenu = c(30, 100, 500),
+      pageLength = 10,
+      lengthMenu = c(10, 100, 500),
       dom = 'Blfrtip',
       buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
     )
