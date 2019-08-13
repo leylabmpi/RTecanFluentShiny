@@ -1,0 +1,252 @@
+PackratFormat: 1.4
+PackratVersion: 0.4.9.3
+RVersion: 3.5.1
+Repos: CRAN=https://mran.microsoft.com/snapshot/2018-08-01
+
+Package: BH
+Source: CRAN
+Version: 1.66.0-1
+
+Package: DT
+Source: CRAN
+Version: 0.4
+Requires: crosstalk, htmltools, htmlwidgets, magrittr
+
+Package: R6
+Source: CRAN
+Version: 2.2.2
+Hash: b2366cd9d2f3851a5704b4e192b985c2
+
+Package: RColorBrewer
+Source: CRAN
+Version: 1.1-2
+
+Package: Rcpp
+Source: CRAN
+Version: 0.12.18
+
+Package: assertthat
+Source: CRAN
+Version: 0.2.0
+
+Package: bindr
+Source: CRAN
+Version: 0.1.1
+
+Package: bindrcpp
+Source: CRAN
+Version: 0.2.2
+Requires: Rcpp, bindr, plogr
+
+Package: cellranger
+Source: CRAN
+Version: 1.1.0
+Requires: rematch, tibble
+
+Package: cli
+Source: CRAN
+Version: 1.0.0
+Requires: assertthat, crayon
+
+Package: colorspace
+Source: CRAN
+Version: 1.3-2
+
+Package: crayon
+Source: CRAN
+Version: 1.3.4
+
+Package: crosstalk
+Source: CRAN
+Version: 1.0.0
+Requires: R6, jsonlite, ggplot2, htmltools, lazyeval, shiny
+
+Package: dichromat
+Source: CRAN
+Version: 2.0-0
+
+Package: digest
+Source: CRAN
+Version: 0.6.15
+
+Package: dplyr
+Source: CRAN
+Version: 0.7.6
+Requires: R6, BH, Rcpp, assertthat, bindrcpp, glue, magrittr,
+    pkgconfig, plogr, rlang, tibble, tidyselect
+
+Package: fansi
+Source: CRAN
+Version: 0.2.3
+
+Package: ggplot2
+Source: CRAN
+Version: 3.0.0
+Requires: digest, gtable, lazyeval, plyr, reshape2, rlang, scales,
+    tibble, viridisLite, withr
+
+Package: glue
+Source: CRAN
+Version: 1.3.0
+
+Package: gtable
+Source: CRAN
+Version: 0.2.0
+
+Package: htmltools
+Source: CRAN
+Version: 0.3.6
+Requires: Rcpp, digest
+
+Package: htmlwidgets
+Source: CRAN
+Version: 1.2
+Requires: jsonlite, htmltools, yaml
+
+Package: httpuv
+Source: CRAN
+Version: 1.4.5
+Requires: BH, Rcpp, later, promises
+
+Package: jsonlite
+Source: CRAN
+Version: 1.5
+Hash: 9c51936d8dd00b2f1d4fe9d10499694c
+
+Package: labeling
+Source: CRAN
+Version: 0.3
+
+Package: later
+Source: CRAN
+Version: 0.7.3
+Requires: BH, Rcpp, rlang
+
+Package: lazyeval
+Source: CRAN
+Version: 0.2.1
+
+Package: magrittr
+Source: CRAN
+Version: 1.5
+
+Package: mime
+Source: CRAN
+Version: 0.5
+
+Package: munsell
+Source: CRAN
+Version: 0.5.0
+Requires: colorspace
+
+Package: packrat
+Source: CRAN
+Version: 0.4.9-3
+Hash: 03fb817297975f1da0d1b774b47620b3
+
+Package: pillar
+Source: CRAN
+Version: 1.3.0
+Requires: cli, crayon, fansi, rlang, utf8
+
+Package: pkgconfig
+Source: CRAN
+Version: 2.0.1
+
+Package: plogr
+Source: CRAN
+Version: 0.2.0
+
+Package: plyr
+Source: CRAN
+Version: 1.8.4
+Requires: Rcpp
+
+Package: promises
+Source: CRAN
+Version: 1.0.1
+Requires: R6, Rcpp, later, magrittr, rlang
+
+Package: purrr
+Source: CRAN
+Version: 0.2.5
+Requires: magrittr, rlang, tibble
+
+Package: readxl
+Source: CRAN
+Version: 1.1.0
+Requires: Rcpp, cellranger, tibble
+
+Package: rematch
+Source: CRAN
+Version: 1.0.1
+
+Package: reshape2
+Source: CRAN
+Version: 1.4.3
+Requires: Rcpp, plyr, stringr
+
+Package: rlang
+Source: CRAN
+Version: 0.2.1
+
+Package: scales
+Source: CRAN
+Version: 0.5.0
+Requires: R6, RColorBrewer, Rcpp, dichromat, labeling, munsell, plyr,
+    viridisLite
+
+Package: shiny
+Source: CRAN
+Version: 1.1.0
+Requires: R6, jsonlite, crayon, digest, htmltools, httpuv, later, mime,
+    promises, rlang, sourcetools, xtable
+
+Package: sourcetools
+Source: CRAN
+Version: 0.1.7
+
+Package: stringi
+Source: CRAN
+Version: 1.2.4
+
+Package: stringr
+Source: CRAN
+Version: 1.3.1
+Requires: glue, magrittr, stringi
+
+Package: tibble
+Source: CRAN
+Version: 1.4.2
+Requires: cli, crayon, pillar, rlang
+
+Package: tidyr
+Source: CRAN
+Version: 0.8.1
+Requires: Rcpp, dplyr, glue, magrittr, purrr, rlang, stringi, tibble,
+    tidyselect
+
+Package: tidyselect
+Source: CRAN
+Version: 0.2.4
+Requires: Rcpp, glue, purrr, rlang
+
+Package: utf8
+Source: CRAN
+Version: 1.1.4
+
+Package: viridisLite
+Source: CRAN
+Version: 0.3.0
+
+Package: withr
+Source: CRAN
+Version: 2.1.2
+
+Package: xtable
+Source: CRAN
+Version: 1.8-2
+
+Package: yaml
+Source: CRAN
+Version: 2.2.0
