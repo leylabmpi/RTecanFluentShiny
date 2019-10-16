@@ -65,6 +65,7 @@ well384_index = function(){
 #' converting wellID to column (assuming 96-well)
 #' input: character vector of wellIDs
 well2index = function(x, plate_type='96-well'){
+  x = gsub('([A-Z])0([0-9])', '\\1\\2', as.character(x))
   if(plate_type == '96-well'){
     idx = well96_index()
   } else 
