@@ -162,8 +162,14 @@ shinyServer(function(input, output, session) {
       pageLength = 96,
       lengthMenu = c(96, 384, 1536),
       dom = 'Blfrtip',
-      buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
+      buttons = list(
+        list(extend = "copy", title = NULL), 
+        'csv', 
+        list(extend = 'excel', title = NULL),
+        'pdf', 
+        'print'
+        )
+      )
     )
-  )
 })
 

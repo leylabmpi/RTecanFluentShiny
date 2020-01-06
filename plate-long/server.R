@@ -43,11 +43,18 @@ shinyServer(function(input, output, session) {
     tbl(),
     filter = 'bottom',
     extensions = c('Buttons'),
+    rownames = FALSE,
     options = list(
       pageLength = 384,
       lengthMenu = c(48, 96, 384, 1536),
       dom = 'Blfrtip',
-      buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
+      buttons = list(
+        list(extend = "copy", title = NULL), 
+        'csv', 
+        list(extend = 'excel', title = NULL),
+        'pdf', 
+        'print'
+      )
     )
   )
 })

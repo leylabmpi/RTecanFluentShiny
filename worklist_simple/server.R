@@ -23,7 +23,13 @@ shinyServer(function(input, output, session) {
     options = list(
       pageLength = 40,
       dom = 'Brt',
-      buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
+      buttons = list(
+        list(extend = "copy", title = NULL), 
+        'csv', 
+        list(extend = 'excel', title = NULL),
+        'pdf', 
+        'print'
+      )
     )
   )
   output$example2_tbl = DT::renderDataTable(
@@ -33,7 +39,13 @@ shinyServer(function(input, output, session) {
     options = list(
       pageLength = 40,
       dom = 'Brt',
-      buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
+      buttons = list(
+        list(extend = "copy", title = NULL), 
+        'csv', 
+        list(extend = 'excel', title = NULL),
+        'pdf', 
+        'print'
+      )
     )
   )
 

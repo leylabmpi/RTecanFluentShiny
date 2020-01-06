@@ -236,7 +236,13 @@ shinyServer(function(input, output, session) {
       pageLength = 48,
       lengthMenu = c(48, 96, 384, 1536),
       dom = 'Blfrtip',
-      buttons = c('colvis', 'copy', 'csv', 'excel', 'pdf', 'print')
+      buttons = list(
+        list(extend = "copy", title = NULL), 
+        'csv', 
+        list(extend = 'excel', title = NULL),
+        'pdf', 
+        'print'
+      )
     )
   )
   
@@ -250,7 +256,13 @@ shinyServer(function(input, output, session) {
       pageLength = 48,
       lengthMenu = c(48, 96, 384, 1536),
       dom = 'Blfrtip',
-      buttons = c('colvis', 'copy', 'csv', 'excel', 'pdf', 'print')
+      buttons = list(
+        list(extend = "copy", title = NULL), 
+        'csv', 
+        list(extend = 'excel', title = NULL),
+        'pdf', 
+        'print'
+      )
     )
   )
   
@@ -264,7 +276,13 @@ shinyServer(function(input, output, session) {
       pageLength = 48,
       lengthMenu = c(48, 96, 384, 1536),
       dom = 'Blfrtip',
-      buttons = c('colvis', 'copy', 'csv', 'excel', 'pdf', 'print')
+      buttons = list(
+        list(extend = "copy", title = NULL), 
+        'csv', 
+        list(extend = 'excel', title = NULL),
+        'pdf', 
+        'print'
+      )
     )
   )
   
@@ -278,7 +296,13 @@ shinyServer(function(input, output, session) {
       pageLength = 48,
       lengthMenu = c(48, 96, 384, 1536),
       dom = 'Blfrtip',
-      buttons = c('colvis', 'copy', 'csv', 'excel', 'pdf', 'print')
+      buttons = list(
+        list(extend = "copy", title = NULL), 
+        'csv', 
+        list(extend = 'excel', title = NULL),
+        'pdf', 
+        'print'
+      )
     )
   )
   
@@ -290,7 +314,13 @@ shinyServer(function(input, output, session) {
     options = list(
       pageLength = 50,
       dom = 'Brt',
-      buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
+      buttons = list(
+        list(extend = "copy", title = NULL), 
+        'csv', 
+        list(extend = 'excel', title = NULL),
+        'pdf', 
+        'print'
+      )
     )
   )
 })

@@ -86,29 +86,49 @@ shinyServer(function(input, output, session) {
     options = list(
       pageLength = 50,
       dom = 'Brt',
-      buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
+      buttons = list(
+        list(extend = "copy", title = NULL), 
+        'csv', 
+        list(extend = 'excel', title = NULL),
+        'pdf', 
+        'print'
+      )
     )
   )
   # rendering raw mapping file
   output$map_dt = DT::renderDataTable(
     map_tbl(),
     filter = 'bottom',
+    rownames = FALSE,
     extensions = c('Buttons'),
     options = list(
       pageLength = 40,
       dom = 'Blfrtip',
-      buttons = c('colvis', 'copy', 'csv', 'excel', 'pdf', 'print')
+      buttons = list(
+        list(extend = "copy", title = NULL), 
+        'csv', 
+        list(extend = 'excel', title = NULL),
+        'pdf', 
+        'print'
+      )
     )
   )
   # rendering joined map-endpoint file
   output$end_map_dt = DT::renderDataTable(
     end_map_tbl(),
     filter = 'bottom',
+    rownames = FALSE,
     extensions = c('Buttons'),
     options = list(
       pageLength = 40,
       dom = 'Blfrtip',
-      buttons = c('colvis', 'copy', 'csv', 'excel', 'pdf', 'print')
+      buttons = list(
+        list(extend = "copy", title = NULL), 
+        'csv', 
+        list(extend = 'excel', title = NULL),
+        'pdf', 
+        'print'
+      )
     )
   )
 

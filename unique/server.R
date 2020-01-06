@@ -24,12 +24,19 @@ shinyServer(function(input, output, session) {
   output$tbl = DT::renderDataTable(
     tbl(),
     filter = 'bottom',
+    rownames = FALSE,
     extensions = c('Buttons'),
     options = list(
       pageLength = 20,
       lengthMenu = c(20, 100, 500, 5000),
       dom = 'Blfrtip',
-      buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
+      buttons = list(
+        list(extend = "copy", title = NULL), 
+        'csv', 
+        list(extend = 'excel', title = NULL),
+        'pdf', 
+        'print'
+      )
     )
   )
   
