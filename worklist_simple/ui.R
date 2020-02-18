@@ -46,7 +46,7 @@ shinyUI(fluidPage(
                                       tags$ul(
                                         tags$li('[XXX] can be up to [008]')
                                       ),
-                                      tags$li('"G10ml_Falcon[XXX]"'),
+                                      tags$li('"G10mlFalcon[XXX]"'),
                                       tags$ul(
                                         tags$li('[XXX] can be up to [012]')
                                       )
