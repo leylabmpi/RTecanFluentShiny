@@ -18,7 +18,7 @@ well_convert = function(x, conv_dir, plate_type){
   } else{
     y = x 
   }
-  df = data.frame(converted = y)
+  df = data.frame(Position = y)
   return(df)
 }
 
