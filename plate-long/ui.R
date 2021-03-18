@@ -2,25 +2,26 @@
 library(shiny)
 
 
-
 #-- UI --#
 shinyUI(fluidPage(
   pageWithSidebar(
     titlePanel("Plate-table <--> Long-table"),
     sidebarPanel(width = 3, 
+                 h4('Input'),
                  selectInput('plate_or_long',
-                             label = 'Input: plate or long table format?',
+                             label = 'Plate or long table format?',
                              choices = c('Plate' = 'Plate',
                                          'Long' = 'Long'),
                              selected = 'Plate'),
-                 conditionalPanel(
-                   condition = "input.plate_or_long == 'Long'",
-                   selectInput('plate_type',
-                               label = "Ouput: which plate type?",
-                               choices = c('96-well' = '96-well',
+                 h4('Output'),
+                 selectInput('plate_type',
+                             label = "Which plate type?",
+                             choices = c('96-well' = '96-well',
                                            '384-well' = '384-well'),
-                               selected = '96-well')
-                  )
+                             selected = '96-well'),
+                 checkboxInput('add_well_ID',
+                               label = "Add well ID?",
+                               value = FALSE)
                 ),
     mainPanel(
       h4("Convert table between labware plate format and a long table format"),

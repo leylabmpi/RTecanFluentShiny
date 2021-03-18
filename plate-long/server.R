@@ -4,10 +4,19 @@ library(tidyr)
 source("../utils/io.R")
 source("../utils/format.R")
 
-plate2long = function(x){
+plate2long = function(x, plate_type = '96-well', add_well_ID=TRUE){
   y = read.delim(text=x, sep='\t', header=FALSE)
   y = as.data.frame(as.vector(as.matrix(y)))
   colnames(y) = c('long_format')
+  if(add_well_ID == TRUE){
+    if(plate_type == '96-well'){
+      y$well = index2well(well96_index()[1:nrow(y)])
+    } else 
+    if(plate_type == '384-well'){
+      y$well = index2well(well384_index()[1:nrow(y)])
+    }
+    y = y[,c('well', 'long_format')]
+  }
   return(y)
 }
 
@@ -32,7 +41,7 @@ shinyServer(function(input, output, session) {
   tbl = reactive({
     x = NULL
     if(input$plate_or_long == 'Plate'){
-      x = plate2long(input$input_text)
+      x = plate2long(input$input_text, input$plate_type, input$add_well_ID)
     } else if(input$plate_or_long == 'Long'){
       x = long2plate(input$input_text, plate_type=input$plate_type)
     } 
