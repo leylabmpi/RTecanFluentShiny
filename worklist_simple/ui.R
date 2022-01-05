@@ -26,29 +26,43 @@ shinyUI(fluidPage(
                                     tags$ul(
                                       tags$li('"96 Well Eppendorf TwinTec PCR[XXX]"'),
                                       tags$ul(
-                                        tags$li('[XXX] can be up to [006]')
+                                        tags$li('[XXX] can be up to [006]'),
+                                        tags$li('The PCR plates will be on metal adapters')
+                                      ),
+                                      tags$li('"96 Well Eppendorf TwinTec PCR on magnet[XXX]"'),
+                                      tags$ul(
+                                        tags$li('[XXX] can be up to [002]'),
+                                        tags$li('The PCR plates will be on Alpaqua magnets')
                                       ),
                                       tags$li('"384 Well Biorad PCR[XXX]"'),
                                       tags$ul(
-                                        tags$li('[XXX] can be up to [003]')
+                                        tags$li('[XXX] can be up to [001]'),
+                                        tags$li('The plates will be on metal adapters')
                                       ),
                                       tags$li('"100ml[001]"'),
                                       tags$li('"25ml[001]"'),
+                                      tags$ul(
+                                        tags$li('Each 25ml trough MUST be placed within a 100ml trough!')
+                                      ),
                                       tags$li('"Eppendorf1p5ml[XXX]"'),
                                       tags$ul(
-                                        tags$li('[XXX] can be up to [048]')
+                                        tags$li('[XXX] can be up to [048]'),
+                                        tags$li('The tubes will be in metal adapters')
                                       ),
                                       tags$li('"Eppendorf2p0ml[XXX]"'),
                                       tags$ul(
-                                        tags$li('[XXX] can be up to [048]')
+                                        tags$li('[XXX] can be up to [048]'),
+                                        tags$li('The tubes will be in metal adapters')
                                       ),
                                       tags$li('"Eppendorf5ml[XXX]"'),
                                       tags$ul(
-                                        tags$li('[XXX] can be up to [008]')
+                                        tags$li('[XXX] can be up to [008]'),
+                                        tags$li('The tubes will be in 3d-printed adapters')
                                       ),
                                       tags$li('"G10mlFalcon[XXX]"'),
                                       tags$ul(
-                                        tags$li('[XXX] can be up to [012]')
+                                        tags$li('[XXX] can be up to [012]'),
+                                        tags$li('The tubes will be in 3d-printed adapters')
                                       )
                                     ),
                                     br(),

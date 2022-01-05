@@ -10,6 +10,7 @@ __pycache__/
 .Python
 env/
 build/
+archive/
 develop-eggs/
 dist/
 downloads/
@@ -24,6 +25,7 @@ var/
 .installed.cfg
 *.egg
 src/
+renv/
 .Rhistory
 
 # misc
