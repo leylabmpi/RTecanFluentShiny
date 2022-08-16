@@ -27,17 +27,17 @@ shinyUI(fluidPage(
                                       tags$li('"96 Well Eppendorf TwinTec PCR[XXX]"'),
                                       tags$ul(
                                         tags$li('[XXX] can be up to [006]'),
-                                        tags$li('The PCR plates will be on metal adapters')
+                                        tags$li('The PCR plates need to be on metal adapters')
                                       ),
                                       tags$li('"96 Well Eppendorf TwinTec PCR on magnet[XXX]"'),
                                       tags$ul(
                                         tags$li('[XXX] can be up to [002]'),
-                                        tags$li('The PCR plates will be on Alpaqua magnets')
+                                        tags$li('The PCR plates need to be on Alpaqua magnets')
                                       ),
                                       tags$li('"384 Well Biorad PCR[XXX]"'),
                                       tags$ul(
                                         tags$li('[XXX] can be up to [001]'),
-                                        tags$li('The plates will be on metal adapters')
+                                        tags$li('The plates need to be on metal adapters')
                                       ),
                                       tags$li('"100ml[001]"'),
                                       tags$li('"25ml[001]"'),
